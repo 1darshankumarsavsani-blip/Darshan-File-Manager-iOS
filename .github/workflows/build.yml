@@ -1,0 +1,73 @@
+name: Build iOS app
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Unit tests (DarshanCore)
+        run: |
+          set -o pipefail
+          swift test 2>&1 | tee test.log
+          grep -E "Executed [0-9]+ tests" test.log | tail -1
+
+      - name: Generate Xcode project (XcodeGen)
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Build for iPhone simulator
+        run: |
+          set -o pipefail
+          xcodebuild -project DarshanFileManager.xcodeproj -scheme DarshanFileManager \
+            -destination 'generic/platform=iOS Simulator' -configuration Debug \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build 2>&1 | tee build.log | tail -40
+          echo "BUILD_APP=$(find build/Build/Products -name 'DarshanFileManager.app' -maxdepth 3 | head -1)" >> $GITHUB_ENV
+
+      - name: Show compiler errors (only on failure)
+        if: failure()
+        run: |
+          for f in test.log build.log; do
+            [ -f "$f" ] || continue
+            msg=$(grep -E "error:|Fatal error|failed" "$f" | head -25 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=errors in $f::$msg"
+          done
+
+      - name: Screenshots on the iPhone simulator (best effort)
+        continue-on-error: true
+        run: ./scripts/screenshots.sh
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-iOS
+          path: build/screenshots
+          if-no-files-found: ignore
+
+      - name: Publish screenshots (rolling pre-release "ci-screenshots")
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view ci-screenshots >/dev/null 2>&1 || gh release create ci-screenshots --prerelease --title "CI screenshots" --notes "Latest screenshots produced by CI (replaced on every push)."
+          ls build/screenshots/*.png >/dev/null 2>&1 && gh release upload ci-screenshots build/screenshots/*.png --clobber || true
