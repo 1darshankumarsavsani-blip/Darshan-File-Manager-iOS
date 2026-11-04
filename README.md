@@ -67,7 +67,7 @@ This is an iPhone / iPad app (iOS 16+). Apple only allows installing apps that a
 
 ## ✅ How it was tested (please read)
 
-- The logic lives in a plain Swift package, **DarshanCore**, with **72 XCTest unit tests**: sorting by type / extension / date, rule precedence, duplicate grouping and moving, old-file selection, rename patterns, storage totals, undo, theme contrast, Gujarati strings and Auto-mode summaries.
+- The logic lives in a plain Swift package, **DarshanCore**, with **73 XCTest unit tests**: sorting by type / extension / date, rule precedence, duplicate grouping and moving, old-file selection, rename patterns, storage totals, undo, theme contrast, Gujarati strings and Auto-mode summaries.
 - Every push is built and tested by **GitHub Actions on a real macOS runner** (see the **Actions** tab). The CI also generates the Xcode project with XcodeGen and builds the app for the iPhone simulator.
 - **It has not been tested on a physical iPhone by the author** (the author does not own one). CI screenshots show the real app running, but if you hit a bug, please open an issue.
 
