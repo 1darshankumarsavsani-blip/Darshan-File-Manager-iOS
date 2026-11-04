@@ -17,8 +17,8 @@ public enum Executor {
     }
 
     /// Performs the planned moves, creating folders as needed. Never overwrites anything.
-    /// Returns an Operation describing what happened (empty `moves` when nothing moved).
-    public static func apply(_ plan: [PlannedMove], title: String, fm: FileManager = .default) -> Operation {
+    /// Returns an FileOperation describing what happened (empty `moves` when nothing moved).
+    public static func apply(_ plan: [PlannedMove], title: String, fm: FileManager = .default) -> FileOperation {
         var records: [MoveRecord] = []
         var created: [String] = []
         for m in plan {
@@ -40,12 +40,12 @@ public enum Executor {
                 records.append(MoveRecord(from: m.from.path, to: dest.path))
             } catch { continue }
         }
-        return Operation(id: UUID(), title: title, date: Date(), moves: records, createdDirs: created)
+        return FileOperation(id: UUID(), title: title, date: Date(), moves: records, createdDirs: created)
     }
 
     /// Reverses an operation (last move first). Returns how many files were put back.
     @discardableResult
-    public static func undo(_ op: Operation, fm: FileManager = .default) -> Int {
+    public static func undo(_ op: FileOperation, fm: FileManager = .default) -> Int {
         var restored = 0
         for r in op.moves.reversed() {
             guard fm.fileExists(atPath: r.to) else { continue }
@@ -68,28 +68,28 @@ public enum Executor {
 
 /// Persistent undo journal (JSON file). Newest operation last.
 public final class Journal {
-    public private(set) var operations: [Operation] = []
+    public private(set) var operations: [FileOperation] = []
     private let fileURL: URL?
     private let limit: Int
 
     public init(fileURL: URL? = nil, limit: Int = 50) {
         self.fileURL = fileURL; self.limit = limit
         if let u = fileURL, let data = try? Data(contentsOf: u),
-           let ops = try? JSONDecoder.iso.decode([Operation].self, from: data) { operations = ops }
+           let ops = try? JSONDecoder.iso.decode([FileOperation].self, from: data) { operations = ops }
     }
 
-    public func push(_ op: Operation) {
+    public func push(_ op: FileOperation) {
         guard !op.moves.isEmpty else { return }
         operations.append(op)
         if operations.count > limit { operations.removeFirst(operations.count - limit) }
         save()
     }
 
-    public var last: Operation? { operations.last }
+    public var last: FileOperation? { operations.last }
 
     /// Undoes the newest operation. Returns it (nil when there was nothing to undo) and the number of files restored.
     @discardableResult
-    public func undoLast() -> (Operation, Int)? {
+    public func undoLast() -> (FileOperation, Int)? {
         guard let op = operations.popLast() else { return nil }
         let n = Executor.undo(op)
         save()

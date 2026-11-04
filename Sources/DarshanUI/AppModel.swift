@@ -39,7 +39,7 @@ public final class AppModel: ObservableObject {
         scheduleAuto()
     }
 
-    public static func defaultJournalURL() -> URL? {
+    nonisolated public static func defaultJournalURL() -> URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
             .appendingPathComponent("DarshanFileManager", isDirectory: true).appendingPathComponent("journal.json")
     }
@@ -105,7 +105,7 @@ public final class AppModel: ObservableObject {
         status = s
     }
 
-    private func finish(_ op: Operation, title: String, countKey: String) {
+    private func finish(_ op: FileOperation, title: String, countKey: String) {
         journal.push(op)
         canUndo = journal.last != nil
         addLog(op.count == 0 ? t("nothing_to_move") : title + ": " + t(countKey, [String(op.count)]))

@@ -4,7 +4,7 @@ public struct AutoSummary: Equatable {
     public var sorted = 0
     public var duplicatesMoved = 0
     public var oldMoved = 0
-    public var operations: [Operation] = []
+    public var operations: [FileOperation] = []
     public init() {}
 
     public var total: Int { sorted + duplicatesMoved + oldMoved }

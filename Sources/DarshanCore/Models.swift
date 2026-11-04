@@ -37,7 +37,7 @@ public struct MoveRecord: Codable, Equatable {
 }
 
 /// One undo-able operation: everything that moved plus folders that were created.
-public struct Operation: Codable, Equatable, Identifiable {
+public struct FileOperation: Codable, Equatable, Identifiable {
     public let id: UUID
     public let title: String
     public let date: Date
