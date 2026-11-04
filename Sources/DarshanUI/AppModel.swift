@@ -113,6 +113,14 @@ public final class AppModel: ObservableObject {
 
     public var hasFolder: Bool { folder != nil }
 
+    /// Path shown to the user, relative to the chosen folder.
+    public func relativePath(_ url: URL) -> String {
+        guard let f = folder?.standardizedFileURL.path else { return url.path }
+        let p = url.standardizedFileURL.path
+        if p.hasPrefix(f + "/") { return String(p.dropFirst(f.count + 1)) }
+        return url.lastPathComponent
+    }
+
     // MARK: sorting
     public enum SortKind { case type, ext, date, rules }
 

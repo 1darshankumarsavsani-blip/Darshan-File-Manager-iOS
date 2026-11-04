@@ -9,16 +9,16 @@ public enum Accent: String, Codable, CaseIterable {
     public func hex(dark: Bool) -> String {
         switch (self, dark) {
         case (.maroon, false): return "7B1E3A"   // brand
-        case (.maroon, true): return "B8456A"
+        case (.maroon, true): return "A63B5F"
         case (.gold, _): return "F7B500"         // brand
         case (.blue, false): return "1565C0"
-        case (.blue, true): return "5AA2F5"
+        case (.blue, true): return "2F6FC4"
         case (.green, false): return "2E7D32"
-        case (.green, true): return "5CBF63"
+        case (.green, true): return "2E8B3A"
         case (.purple, false): return "6A1B9A"
-        case (.purple, true): return "B576E0"
+        case (.purple, true): return "8E47BF"
         case (.orange, false): return "E65100"
-        case (.orange, true): return "FF9248"
+        case (.orange, true): return "E8761F"
         }
     }
 

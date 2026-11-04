@@ -12,5 +12,6 @@ let package = Package(
         .target(name: "DarshanCore"),
         .target(name: "DarshanUI", dependencies: ["DarshanCore"]),
         .testTarget(name: "DarshanCoreTests", dependencies: ["DarshanCore"]),
+        .testTarget(name: "DarshanUITests", dependencies: ["DarshanUI", "DarshanCore"]),
     ]
 )

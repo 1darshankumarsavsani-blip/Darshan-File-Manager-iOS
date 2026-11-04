@@ -27,7 +27,9 @@ jobs:
         run: |
           set -o pipefail
           swift test 2>&1 | tee test.log
-          grep -E "Executed [0-9]+ tests" test.log | tail -1
+          SUMMARY=$(grep -E "Executed [0-9]+ tests" test.log | tail -1)
+          echo "$SUMMARY"
+          echo "::notice title=Unit tests::$SUMMARY"
 
       - name: Generate Xcode project (XcodeGen)
         run: |

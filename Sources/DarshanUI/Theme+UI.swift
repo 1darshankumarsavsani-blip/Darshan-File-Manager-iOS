@@ -155,7 +155,7 @@ struct Field: View {
     let title: String
     @Binding var text: String
     var body: some View {
-        TextField(title, text: $text)
+        TextField("", text: $text, prompt: Text(title).foregroundStyle(th.secondary))
             .textFieldStyle(.plain)
             .autocorrectionDisabled()
             .foregroundStyle(th.text)

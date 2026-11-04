@@ -79,12 +79,12 @@ struct DuplicatesView: View {
                                     HStack(spacing: 10) {
                                         Image(systemName: "checkmark.seal.fill").foregroundStyle(th.ink).frame(width: 24)
                                         VStack(alignment: .leading, spacing: 1) {
-                                            Text(f.url.path).font(.system(size: 13)).foregroundStyle(th.text).lineLimit(1).truncationMode(.middle)
+                                            Text(model.relativePath(f.url)).font(.system(size: 13)).foregroundStyle(th.text).lineLimit(1).truncationMode(.middle)
                                             Text(model.t("dup_keep")).font(.system(size: 11)).foregroundStyle(th.secondary)
                                         }
                                     }
                                 } else {
-                                    CheckRow(title: f.url.path, isOn: Binding(get: { model.duplicateSelection.contains(f.id) }, set: { _ in model.toggleDuplicate(f) }))
+                                    CheckRow(title: model.relativePath(f.url), isOn: Binding(get: { model.duplicateSelection.contains(f.id) }, set: { _ in model.toggleDuplicate(f) }))
                                 }
                             }
                         }
@@ -269,7 +269,7 @@ struct StorageView: View {
                     let maxBytes = max(model.usage.map { $0.bytes }.max() ?? 1, 1)
                     ForEach(model.usage) { u in
                         BarRow(label: L.category(u.category, model.lang),
-                               detail: model.t("files_n", [String(u.count)]) + " · " + formatBytes(u.bytes),
+                               detail: (u.count == 1 ? model.t("file_1") : model.t("files_n", [String(u.count)])) + " · " + formatBytes(u.bytes),
                                fraction: Double(u.bytes) / Double(maxBytes))
                     }
                 }

@@ -79,6 +79,7 @@ public enum L {
         "rules_hint": (en: "Rules run before the built-in types. The first matching rule wins.", gu: "નિયમો built-in પ્રકારો પહેલા ચાલે છે. પહેલો મળતો નિયમ લાગુ પડે છે."),
         "storage_scan": (en: "Calculate", gu: "ગણતરી કરો"),
         "storage_total": (en: "Total: {0} files, {1}", gu: "કુલ: {0} ફાઇલો, {1}"),
+        "file_1": (en: "1 file", gu: "1 ફાઇલ"),
         "files_n": (en: "{0} files", gu: "{0} ફાઇલો"),
         "settings_theme": (en: "Theme", gu: "થીમ"),
         "theme_system": (en: "System", gu: "સિસ્ટમ"),

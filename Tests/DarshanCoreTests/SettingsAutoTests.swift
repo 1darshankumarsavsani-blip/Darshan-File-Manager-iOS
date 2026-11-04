@@ -56,6 +56,8 @@ final class SettingsAutoTests: TempTestCase {
             for a in Accent.allCases {
                 // text on a button filled with the accent
                 XCTAssertGreaterThanOrEqual(Contrast.ratio(a.hex(dark: dark), a.onAccentHex(dark: dark)), 4.5, "\(a) dark=\(dark)")
+                // the button must stand out from the card it sits on
+                XCTAssertGreaterThanOrEqual(Contrast.ratio(a.hex(dark: dark), p.surface), dark ? 2.5 : 1.5, "\(a) fill vs surface dark=\(dark)")
                 // accent "ink" for text/highlights on the page background and on cards
                 XCTAssertGreaterThanOrEqual(Contrast.ratio(a.inkHex(dark: dark), p.background), 4.5, "\(a) ink bg dark=\(dark)")
                 XCTAssertGreaterThanOrEqual(Contrast.ratio(a.inkHex(dark: dark), p.surface), 4.5, "\(a) ink surface dark=\(dark)")
